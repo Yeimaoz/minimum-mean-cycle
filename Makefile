@@ -20,4 +20,4 @@ $(TARGET): $(BUILD)/main.o $(BUILD)/parser.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 clean:
-	$(RM) -rf $(BUILD) *.txt
+	$(RM) -rf $(TARGET) $(BUILD) *.txt 
