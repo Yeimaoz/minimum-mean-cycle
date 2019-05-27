@@ -1,3 +1,5 @@
-doc
-ref
 testcase
+build
+*.txt
+MMC
+*.o
