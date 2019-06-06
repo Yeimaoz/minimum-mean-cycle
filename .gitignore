@@ -1,5 +1,7 @@
 testcase
 build
 *.txt
-MMC
+Lab1
+ref
 *.o
+.vscode
