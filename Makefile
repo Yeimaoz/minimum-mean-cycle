@@ -4,7 +4,9 @@ CXXFLAGS += -g -std=c++11 -Wall -Isrc/
 VPATH = src:build
 SRC ?= ./src
 BUILD ?= ./build
-TARGET ?= MMC
+TARGET ?= Lab1
+
+TESTCASE ?= testcase/pci_bridge32.in
 
 .PHONY: clean all
 
@@ -16,8 +18,11 @@ $(BUILD)/%.o: %.cpp
 $(BUILD):
 	mkdir $@
 
-$(TARGET): $(BUILD)/main.o $(BUILD)/parser.o 
+$(TARGET): $(BUILD)/main.o $(BUILD)/parser.o $(BUILD)/Graph.o $(BUILD)/Node.o 
 	$(CXX) $(CXXFLAGS) $^ -o $@
+
+test: $(TARGET)
+	./$(TARGET) $(TESTCASE)
 
 clean:
 	$(RM) -rf $(TARGET) $(BUILD) *.txt 
