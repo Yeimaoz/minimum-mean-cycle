@@ -1,9 +1,12 @@
+#include <iostream>
 #include "parser.h"
+#include "Graph.h"
+using namespace std;
 
 int main(int argc, char** argv) 
 {
     if(argc < 2){
-        printf("Usage: ./Lab2 <.in>\n");
+        printf("Usage: ./Lab1 <.in>\n");
         return 0;
     }
     
@@ -19,6 +22,12 @@ int main(int argc, char** argv)
         }
         pParser->dump();
     }
+    Graph G(pParser->_vNode, pParser->_vEdge);
+    G.information();
+    G.depth_first_search();
+    G.find_strongly_connected_components();
+    
+
 
     /* Start your code */
     // 1. find minimum mean cycle

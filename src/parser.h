@@ -27,7 +27,7 @@ struct parser_S{
         ~parser_S() {} 
         bool parse();
         void dump();
-    
+
         //data
         vector<edge_S*>     _vEdge;
         vector<node_S*>     _vNode;
