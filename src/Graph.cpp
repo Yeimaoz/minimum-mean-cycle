@@ -24,6 +24,9 @@ Graph::~Graph(){
     for (auto it = _nodes.begin(); it != _nodes.end(); ++it){
         delete it->second;
     }
+    for (auto scc = _sccs.begin(); scc != _sccs.end(); ++scc){
+        delete *scc;
+    }
     delete _super;
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -78,11 +81,16 @@ void Graph::find_strongly_connected_components(){
     // vector<Node*> stack;
     // stack.push_back(T_super);
     
-    // for (auto it = T_super->_fanouts.begin(); it != T_super->_fanouts.end(); ++it){
-    //     vector<Edge*> ssc;
-    //     auto start = (*it)->_to; 
-    //     while( start->_fanouts_it != start->_fanouts.end() &&   )
-    // }
+    for (auto it = T_super->_fanouts.begin(); it != T_super->_fanouts.end(); ++it){
+        vector<Edge*> scc;
+        auto current = (*it)->_to; 
+        while(current->_fanouts_it != current->_fanouts.end()){
+            if ((*current->_fanouts_it)->_to->_visited){
+                _sccs.push_back(new Strongly_Connected_Component(scc));
+            }
+            ++current->_fanouts_it;
+        }
+    }
     
 
     // while (!stack.empty()){
