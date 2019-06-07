@@ -78,38 +78,40 @@ void Graph::find_strongly_connected_components(){
  
     T_super->_fanouts_it = T_super->_fanouts.begin();
     for_each(T_super->_fanouts.begin(),T_super->_fanouts.end(), [](Edge* edge) {edge->_to->_fanouts_it = edge->_to->_fanouts.begin();});
-    // vector<Node*> stack;
-    // stack.push_back(T_super);
     
     for (auto it = T_super->_fanouts.begin(); it != T_super->_fanouts.end(); ++it){
+    
         vector<Edge*> scc;
         auto current = (*it)->_to; 
-        while(current->_fanouts_it != current->_fanouts.end()){
-            if ((*current->_fanouts_it)->_to->_visited){
-                _sccs.push_back(new Strongly_Connected_Component(scc));
-            }
-            ++current->_fanouts_it;
+        if (current->_id == (*current->_fanouts_it)->_to->_id){
+            cout << current->_id << "self cycle!" << endl;
         }
-    }
-    
+        // cout << "@@" << current->_id << endl;
+        while(current->_fanouts_it != current->_fanouts.end()){
+            // cout << current->_id << endl;
+            if ((*current->_fanouts_it)->_to->_visited){
+                // cout << "????" <<endl;
 
-    // while (!stack.empty()){
-    //     Node* top = stack.back(); 
-    //     // cout << "id: " << top->_id << " fanouts: " << top->_fanouts.size() << " d: " << top->_d << " f: " << top->_f << endl;
-    //     // cout << stack.size() << endl;
-    //     // cin.get();
-    //     if (top->_fanouts_it == top->_fanouts.end()) { 
-    //         top->_f = ++time;
-    //         stack.pop_back(); 
-    //     } else {
-    //         if (!(*top->_fanouts_it)->_to->_visited){
-    //             (*top->_fanouts_it)->_to->_visited = true;
-    //             (*top->_fanouts_it)->_to->_d = ++time;
-    //             stack.push_back((*top->_fanouts_it++)->_to);
-    //         } else {
-    //             ++top->_fanouts_it;
-    //         }
-    //     }      
-    // }
+                _sccs.push_back(new Strongly_Connected_Component(vector<Edge*>(scc.rbegin(), scc.rend())));
+            } else {
+                // cout << "!!!!" <<endl;
+                scc.push_back(*current->_fanouts_it);
+                (*current->_fanouts_it)->_to->_visited = true;
+            }
+            current = (*current->_fanouts_it++)->_to;
+        }
+        
+    }
+    sort(_sccs.begin(), _sccs.end(), 
+        [](const Strongly_Connected_Component* lhs, const Strongly_Connected_Component* rhs){
+            return lhs->_scc.size() < rhs->_scc.size();
+        }
+    );
+    cout << "Strongly connected components: " << _sccs.size() << endl;
+    for (unsigned int i = 0; i < _sccs.size(); ++i){
+        if (_sccs[i]->_scc.size())
+            cout << _sccs[i]->_scc.size() << " | ";
+            _sccs[i]->information();
+    }
 }
 //----------------------------------------------------------------------------------------------------------------------

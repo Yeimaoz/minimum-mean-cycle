@@ -39,6 +39,7 @@ class Strongly_Connected_Component{
     public:
         Strongly_Connected_Component(vector<Edge*> scc): _scc(scc){}
         vector<Edge*> _scc;
+        void information() { for(auto it = _scc.begin(); it != _scc.end(); ++it) {cout << (*it)->_to->_id << " ";} cout << endl;};
 };
 
 #endif
