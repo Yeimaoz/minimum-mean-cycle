@@ -23,6 +23,7 @@ class Graph{
         // action
         void depth_first_search();
         void find_strongly_connected_components();
+        void find_all_cycles();
 
     private:
         // attribute
@@ -35,11 +36,11 @@ class Graph{
         vector<Strongly_Connected_Component*> _sccs;
 };
 
-class Strongly_Connected_Component{
+class Cycle{
     public:
-        Strongly_Connected_Component(vector<Edge*> scc): _scc(scc){}
-        vector<Edge*> _scc;
-        void information() { for(auto it = _scc.begin(); it != _scc.end(); ++it) {cout << (*it)->_to->_id << " ";} cout << endl;};
+        Cycle(vector<Edge*> cycle): _cycle(cycle){}
+        vector<Edge*> _cycle;
+        void information() { for(auto it = _cycle.begin(); it != _cycle.end(); ++it) {cout << (*it)->_to->_id << " ";} cout << endl;};
 };
 
 #endif

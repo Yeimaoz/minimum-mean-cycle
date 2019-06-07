@@ -8,14 +8,16 @@ Graph::Graph(vector<node_S*> nodes, vector<edge_S*> edges){
     // new node
     for (auto it = nodes.begin(); it != nodes.end(); ++it){
         _nodes[(*it)->_id] = new Node((*it)->_id);
-        _super->append(_nodes[(*it)->_id], 0);
+        _super->append(-1, _nodes[(*it)->_id], 0);
         T_nodes[(*it)->_id] = new Node((*it)->_id);
-        T_super->append(T_nodes[(*it)->_id], 0);
+        T_super->append(-1, T_nodes[(*it)->_id], 0);
     }
     // append edge to node
+    int edge_id = 1;
     for (auto it = edges.begin(); it != edges.end(); ++it){
-        _nodes[(*it)->_fromNode]->append(_nodes[(*it)->_toNode], (*it)->_weight);
-        T_nodes[(*it)->_toNode]->append(T_nodes[(*it)->_fromNode], (*it)->_weight);
+        _nodes[(*it)->_fromNode]->append(edge_id, _nodes[(*it)->_toNode], (*it)->_weight);
+        T_nodes[(*it)->_toNode]->append(edge_id, T_nodes[(*it)->_fromNode], (*it)->_weight);
+        ++edge_id;
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -67,51 +69,50 @@ void Graph::depth_first_search(){
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
+void Graph::find_all_cycles(){
+
+}
+//----------------------------------------------------------------------------------------------------------------------
 void Graph::find_strongly_connected_components(){
     cout << "Finding strongly connected components ..." << endl;
+    // comparator with passing outer arguments
+    // key: finished time of fanout with decreasing order
     struct cmp {
         cmp(map<int, Node*>* lut) { this->lut = lut; }
-        bool operator () (const Edge* lhs, const Edge* rhs) { return (*this->lut)[lhs->_to->_id]->_f < (*this->lut)[rhs->_to->_id]->_f; }
+        bool operator () (const Edge* lhs, const Edge* rhs) { return (*this->lut)[lhs->_to->_id]->_f > (*this->lut)[rhs->_to->_id]->_f; }
         map<int, Node*>* lut;
     };
-    sort(T_super->_fanouts.begin(), T_super->_fanouts.end(), cmp(&_nodes));
- 
-    T_super->_fanouts_it = T_super->_fanouts.begin();
-    for_each(T_super->_fanouts.begin(),T_super->_fanouts.end(), [](Edge* edge) {edge->_to->_fanouts_it = edge->_to->_fanouts.begin();});
-    
-    for (auto it = T_super->_fanouts.begin(); it != T_super->_fanouts.end(); ++it){
-    
-        vector<Edge*> scc;
-        auto current = (*it)->_to; 
-        if (current->_id == (*current->_fanouts_it)->_to->_id){
-            cout << current->_id << "self cycle!" << endl;
-        }
-        // cout << "@@" << current->_id << endl;
-        while(current->_fanouts_it != current->_fanouts.end()){
-            // cout << current->_id << endl;
-            if ((*current->_fanouts_it)->_to->_visited){
-                // cout << "????" <<endl;
 
-                _sccs.push_back(new Strongly_Connected_Component(vector<Edge*>(scc.rbegin(), scc.rend())));
-            } else {
-                // cout << "!!!!" <<endl;
-                scc.push_back(*current->_fanouts_it);
-                (*current->_fanouts_it)->_to->_visited = true;
+    // topological sort
+    sort(T_super->_fanouts.begin(), T_super->_fanouts.end(), cmp(&_nodes));
+
+    // fanout iterator init
+    T_super->_fanouts_it = T_super->_fanouts.begin();
+    for (auto edge : T_super->_fanouts){
+        auto node = edge->_to;
+        sort(node->_fanouts.begin(), node->_fanouts.end(), cmp(&_nodes));
+        node->_fanouts_it = node->_fanouts.begin();
+        // node->information();
+    }
+
+    for (auto it = T_super->_fanouts.begin(); it != T_super->_fanouts.end(); ++it){
+        auto start = (*it)->_to; 
+        auto current = start;
+        // cout << "topo order: " << current->_id << endl; 
+        if (current->_visited) {continue;}
+        vector<Edge*> scc;
+
+        while (current->_fanouts_it != current->_fanouts.end()){
+            // cout << "id: " << current->_id << endl;
+            if ((*current->_fanouts_it)->_to->_visited){
+                ++current->_fanouts_it;
+                continue;
             }
+            scc.push_back(*current->_fanouts_it);
             current = (*current->_fanouts_it++)->_to;
+            current->_visited = true;
         }
         
-    }
-    sort(_sccs.begin(), _sccs.end(), 
-        [](const Strongly_Connected_Component* lhs, const Strongly_Connected_Component* rhs){
-            return lhs->_scc.size() < rhs->_scc.size();
-        }
-    );
-    cout << "Strongly connected components: " << _sccs.size() << endl;
-    for (unsigned int i = 0; i < _sccs.size(); ++i){
-        if (_sccs[i]->_scc.size())
-            cout << _sccs[i]->_scc.size() << " | ";
-            _sccs[i]->information();
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
