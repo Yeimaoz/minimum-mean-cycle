@@ -6,7 +6,7 @@ SRC ?= ./src
 BUILD ?= ./build
 TARGET ?= Lab1
 
-TESTCASE ?= testcase/test.in
+CASE ?= testcase/test.in
 
 .PHONY: clean all
 
@@ -22,7 +22,7 @@ $(TARGET): $(BUILD)/main.o $(BUILD)/parser.o $(BUILD)/Graph.o $(BUILD)/Node.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 test: $(TARGET)
-	./$(TARGET) $(TESTCASE)
+	./$(TARGET) $(CASE)
 
 clean:
 	$(RM) -rf $(TARGET) $(BUILD) *.txt 
