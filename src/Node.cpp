@@ -28,7 +28,7 @@ void Node::information(){
     cout << endl;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void Node::append(Node* to, int weight){
-    _fanouts.push_back(new Edge(to, weight));
+void Node::append(int id, Node* to, int weight){
+    _fanouts.push_back(new Edge(id, to, weight));
 }
 //----------------------------------------------------------------------------------------------------------------------

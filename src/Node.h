@@ -16,7 +16,7 @@ class Node{
         void information();
 
         // action
-        void append(Node* to, int weight);
+        void append(int id, Node* to, int weight);
         
         // attribute
         int _id;
@@ -30,10 +30,11 @@ class Node{
 class Edge{
     public:
         // constructor, copy constructor, destructor
-        Edge(Node* to, int weight): _to(to), _weight(weight){}
+        Edge(int id, Node* to, int weight): _id(id), _to(to), _weight(weight){}
         Edge(const Edge& in): _to(in._to), _weight(in._weight){}
 
         // attribute
+        int _id;
         Node* _to;
         int _weight;
 };
