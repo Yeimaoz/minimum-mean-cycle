@@ -6,7 +6,7 @@ SRC ?= ./src
 BUILD ?= ./build
 TARGET ?= Lab1
 
-TESTCASE ?= testcase/pci_bridge32.in
+TESTCASE ?= testcase/test.in
 
 .PHONY: clean all
 
