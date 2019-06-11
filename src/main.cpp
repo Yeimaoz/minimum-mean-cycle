@@ -23,12 +23,8 @@ int main(int argc, char** argv)
         pParser->dump();
     }
     Graph G(pParser->_vNode, pParser->_vEdge);
-    G.information();
-    G.depth_first_search();
-    G.find_strongly_connected_components();
-    
-
-
+    G.minimum_mean_cycle();
+  
     /* Start your code */
     // 1. find minimum mean cycle
     // 2. dump minimum mean weight and minimum mean cycle in "solution.txt"
