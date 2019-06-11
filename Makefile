@@ -1,5 +1,5 @@
 CC = gcc
-CXX =g++
+CXX = g++
 CXXFLAGS += -g -std=c++11 -Wall -Isrc/
 VPATH = src:build
 SRC ?= ./src
@@ -8,7 +8,7 @@ TARGET ?= Lab1
 
 CASE ?= testcase/test.in
 
-.PHONY: clean all
+.PHONY: clean all test
 
 all: $(BUILD) $(TARGET)
 
