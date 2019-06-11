@@ -2,12 +2,14 @@
 #define __GRAPH_H__
 #include <iostream>
 #include <map>
+#include <string>
+#include <list>
 #include "parser.h"
 #include "Node.h"
-using namespace std;
-
-class Graph;
-class Strongly_Connected_Component;
+using std::map;
+using std::cout;
+using std::cin;
+using std::string;
 
 class Graph{
     public:
@@ -18,29 +20,21 @@ class Graph{
 
         // get
         void information(const char* hierachy="- ");
+        void d_information();
         Node* find(int);
 
         // action
-        void depth_first_search();
-        void find_strongly_connected_components();
-        void find_all_cycles();
+        void minimum_mean_cycle();
+        void single_source_shortest_path();
 
     private:
         // attribute
         // G
         map<int, Node*> _nodes;
+        vector<Edge*> _edges;
         Node* _super;
-        // T
-        map<int, Node*> T_nodes;
-        Node* T_super;
-        vector<Strongly_Connected_Component*> _sccs;
-};
 
-class Cycle{
-    public:
-        Cycle(vector<Edge*> cycle): _cycle(cycle){}
-        vector<Edge*> _cycle;
-        void information() { for(auto it = _cycle.begin(); it != _cycle.end(); ++it) {cout << (*it)->_to->_id << " ";} cout << endl;};
+        vector<vector<int>> _d;
+        vector<vector<list<int>>> _d_path;
 };
-
 #endif
