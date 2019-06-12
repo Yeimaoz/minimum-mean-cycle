@@ -1,6 +1,4 @@
 #include "Graph.h"
-#include <algorithm>
-#include <iomanip>
 using std::cout;
 using std::cin;
 using std::sort;
@@ -8,6 +6,8 @@ using std::setw;
 
 //----------------------------------------------------------------------------------------------------------------------
 Graph::Graph(vector<node_S*> nodes, vector<edge_S*> edges){
+    nc = nodes.size();
+    ec = edges.size();
     // reserve
     _nodes.resize(nodes.size()+1);
     _edges.resize(nodes.size()+1);
@@ -40,7 +40,7 @@ void Graph::information(const char* hierachy){
     cout << hierachy << "Edges: " << _edges.size() << endl;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void Graph::minimum_mean_cycle(){
+void Graph::Karp_Algorithm(){
     // karp's algorithm 
     single_source_shortest_path();
     // table_information(_d);
@@ -48,7 +48,6 @@ void Graph::minimum_mean_cycle(){
     size_t size = _nodes.size(); // contains super node
     // vector<double> average(size, -1e9);
 
-    double result = 1e9;
     int ri = -1;
     int rj = -1;
     int _i = -1;
@@ -58,67 +57,38 @@ void Graph::minimum_mean_cycle(){
         double average = -1e9; 
         for (size_t j = 0; j < size; j++) {
             if (_d[j][i] == 1e9) continue;
-            // cout << "size: " << size << " i: " << i << " j: " << j << endl;
             double avg = ((double)_d[size][i]-_d[j][i])/(size-j);
-            // cout << "_d[size][i]: " << _d[size][i] << endl;
-            // for (auto edge : _d_path[size][i]) {edge->information();}
-            // cout << " _d[j][i]: " << _d[j][i] << endl;
-            // for (auto edge : _d_path[j][i]) {edge->information();}
-            // cout << "sub: " << (double)_d[size][i]-_d[j][i] << endl;
-            // cout << "size-j: " << size-j << endl;
-            // cout << avg <<endl;
             if (avg > average) {
-                _i = i;
-                _j = j;
+                _i = i, _j = j;
                 average = avg;
             }
         }
-        if (average < result){
-            ri = _i;
-            rj = _j;
-            result = average;
+        if (average < _minimum_mean){
+            ri = _i, rj = _j;
+            _minimum_mean = average;
         }
     } 
-    cout << ri << " " << rj << " " << result << endl;
     auto p1 = back_trace(size, ri);
     auto p2 = back_trace(rj, ri);
-    cout << "p1.size: " << p1.size() << ", p2.size: " << p2.size() << endl;
-    for (auto i : p1) {cout << i << " ";} cout << endl;
-    for (auto i : p2) {cout << i << " ";} cout << endl;
-    
+    minimum_mean_cycle(p1, p2);
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::single_source_shortest_path(){
-    // vector<Node*> nodes;
-    // nodes.push_back(_super);
-    // for(auto& p : _nodes){nodes.push_back(p.second);}
-    // vector<vector<list<int>>> d_path(_nodes.size()+1, vector<list<int>>(_nodes.size()));
     vector<vector<int>> f(_nodes.size()+1, vector<int>(_nodes.size(), -1));
     vector<vector<int>> d(_nodes.size()+1, vector<int>(_nodes.size(), 1e9));
-    cout << d.size() << " " << d[0].size() << endl;
     d[0][0] = 0;
     for (size_t k = 1; k <= _nodes.size(); ++k){
         for (size_t i = 0; i < _nodes.size(); ++i){
-            // cout << "k: " << k << " i: " << i << endl;
             for (auto edge : _edges[i]){ 
-                // edge->information();
                 int cur = d[k-1][edge->_fromNode] + edge->_weight; 
-                // cout << "d[" << k-1 << "][" << edge->_fromNode << "]: " << d[k-1][edge->_fromNode] << " w: " << edge->_weight << endl;
-                // cout << "cur: " << cur;
                 if (cur < d[k][i]){
                     d[k][i] = cur;
                     f[k][i] = edge->_fromNode;
-                    // auto temp = d_path[k-1][edge->_fromNode];
-                    // temp.push_back(edge->_toNode);
-                    // d_path[k][i] = temp;
-                } else{
-                    }
+                }
             }
         }
     }
-    _d = d;
-    _f = f;
-    // _d_path = d_path;
+    _d = d, _f = f;
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::table_information(vector<vector<int>>& table){
@@ -140,5 +110,47 @@ vector<int> Graph::back_trace(int count, int dest){
         path.push_back(dest);
     }
     return path;
+}
+//----------------------------------------------------------------------------------------------------------------------
+void Graph::minimum_mean_cycle(vector<int>& lhs, vector<int>& rhs){
+    vector<int> _lhs(lhs.rbegin(), lhs.rend());
+    int begin = -1;
+    int end = -1;
+    for (unsigned int j = 0; j < rhs.size(); ++j){
+        if (lhs[j] != rhs[j]){
+            end = j;
+            break;
+        }
+    }
+    begin = rhs.size()-end;
+    end = lhs.size()-1-end;
+    int flag = _lhs[begin];
+    for (int i = begin+1; i < end+1; ++i){
+        if (flag == _lhs[i]){
+            _minimum_mean_cycle.assign(next(_lhs.begin(), begin), next(_lhs.begin(), i+1));
+            for (auto n : _minimum_mean_cycle){ _minimum_mean_cycle_s += to_string(n) + " ";}
+            break;
+        }
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+void Graph::solution(){
+    printf("[case info] #node:%d, #edge:%d\n", nc, ec);
+    printf("[my solution] MMC: %f\n", _minimum_mean);
+    printf("[my solution] Cycle: %s\n", _minimum_mean_cycle_s.c_str());
+}
+//----------------------------------------------------------------------------------------------------------------------
+void Graph::dump(){
+    ofstream outfile("solution.txt", ios::out);
+
+    if (_minimum_mean != 1e9){
+        // have cycle
+        outfile << to_string(_minimum_mean) << endl;
+        outfile << _minimum_mean_cycle_s << endl;
+    } else {
+        // acyclic
+        outfile << "No cycle" << endl;;
+    }
+    outfile.close();
 }
 //----------------------------------------------------------------------------------------------------------------------
