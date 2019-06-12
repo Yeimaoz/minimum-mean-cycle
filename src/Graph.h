@@ -20,8 +20,8 @@ class Graph{
 
         // get
         void information(const char* hierachy="- ");
-        void d_information();
-        Node* find(int);
+        void table_information(vector<vector<int>>&);
+        // Node* find(int);
 
         // action
         void minimum_mean_cycle();
@@ -30,11 +30,15 @@ class Graph{
     private:
         // attribute
         // G
-        map<int, Node*> _nodes;
-        vector<Edge*> _edges;
+        // map<int, Node*> _nodes;
+        // vector<Edge*> _edges;
         Node* _super;
 
+        vector<node_S*> _nodes;
+        vector<vector<edge_S*>> _edges;
+
         vector<vector<int>> _d;
+        vector<vector<int>> _f;
         vector<vector<list<int>>> _d_path;
 };
 #endif
