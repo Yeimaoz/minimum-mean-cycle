@@ -40,11 +40,6 @@ void Graph::information(const char* hierachy){
     cout << hierachy << "Edges: " << _edges.size() << endl;
 }
 //----------------------------------------------------------------------------------------------------------------------
-// Node* Graph::find(int id){
-//     auto it = _nodes.find(id);
-//     return it == _nodes.end() ? NULL : it->second;
-// }
-//----------------------------------------------------------------------------------------------------------------------
 void Graph::minimum_mean_cycle(){
     // karp's algorithm 
     single_source_shortest_path();
@@ -84,15 +79,20 @@ void Graph::minimum_mean_cycle(){
             result = average;
         }
     } 
-
     cout << ri << " " << rj << " " << result << endl;
+    auto p1 = back_trace(size, ri);
+    auto p2 = back_trace(rj, ri);
+    cout << "p1.size: " << p1.size() << ", p2.size: " << p2.size() << endl;
+    for (auto i : p1) {cout << i << " ";} cout << endl;
+    for (auto i : p2) {cout << i << " ";} cout << endl;
+    
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::single_source_shortest_path(){
     // vector<Node*> nodes;
     // nodes.push_back(_super);
     // for(auto& p : _nodes){nodes.push_back(p.second);}
-    vector<vector<list<int>>> d_path(_nodes.size()+1, vector<list<int>>(_nodes.size()));
+    // vector<vector<list<int>>> d_path(_nodes.size()+1, vector<list<int>>(_nodes.size()));
     vector<vector<int>> f(_nodes.size()+1, vector<int>(_nodes.size(), -1));
     vector<vector<int>> d(_nodes.size()+1, vector<int>(_nodes.size(), 1e9));
     cout << d.size() << " " << d[0].size() << endl;
@@ -116,21 +116,29 @@ void Graph::single_source_shortest_path(){
             }
         }
     }
-    cout << "??" << endl;
     _d = d;
     _f = f;
-    _d_path = d_path;
+    // _d_path = d_path;
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::table_information(vector<vector<int>>& table){
     size_t _setw = 3;
     cout << "   "; for (size_t i = 0; i < _nodes.size(); ++i){ cout << setw(_setw) << i;} cout << endl;
     for (size_t i = 0; i < table.size(); ++i){
-        cout << setw(_setw) << (i != 0 ? to_string(i-1) : "*"); 
+        cout << setw(_setw) << i; 
         for (size_t j = 0 ; j < table[i].size(); ++j){
             cout << setw(_setw) << (table[i][j] == 1e9 ? "*" : to_string(table[i][j]));
         }
         cout << endl;
     }
+}
+//----------------------------------------------------------------------------------------------------------------------
+vector<int> Graph::back_trace(int count, int dest){
+    vector<int> path(1, dest);
+    while(count > 1){
+        dest = _f[count--][dest];
+        path.push_back(dest);
+    }
+    return path;
 }
 //----------------------------------------------------------------------------------------------------------------------

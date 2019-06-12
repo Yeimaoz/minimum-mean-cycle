@@ -21,11 +21,12 @@ class Graph{
         // get
         void information(const char* hierachy="- ");
         void table_information(vector<vector<int>>&);
-        // Node* find(int);
 
         // action
         void minimum_mean_cycle();
         void single_source_shortest_path();
+        vector<int> back_trace(int, int);
+
 
     private:
         // attribute
