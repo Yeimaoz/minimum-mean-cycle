@@ -1,0 +1,13 @@
+Usage:
+    # 1. compile
+    make
+    
+    # 2. remove compiled objs and generated txts
+    make clean
+    
+    # 3. clean and recompile
+    make clean all
+
+    # 4. test by case, if CASE is not specified, the defaut testcase is set to the graph from p.19 of class mertrial of ch. Graphs with randomly given weights 
+    # For example: make test CASE=testcase/test.in
+    make test CASE=<.in>
