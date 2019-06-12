@@ -41,12 +41,10 @@ void Graph::information(const char* hierachy){
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::Karp_Algorithm(){
-    // karp's algorithm 
     single_source_shortest_path();
     // table_information(_d);
     // table_information(_f);
     size_t size = _nodes.size(); // contains super node
-    // vector<double> average(size, -1e9);
 
     int ri = -1;
     int rj = -1;
@@ -68,6 +66,8 @@ void Graph::Karp_Algorithm(){
             _minimum_mean = average;
         }
     } 
+    if (_minimum_mean == 1e9) return; // acyclic
+
     auto p1 = back_trace(size, ri);
     auto p2 = back_trace(rj, ri);
     minimum_mean_cycle(p1, p2);
@@ -115,7 +115,7 @@ vector<int> Graph::back_trace(int count, int dest){
 void Graph::minimum_mean_cycle(vector<int>& lhs, vector<int>& rhs){
     vector<int> _lhs(lhs.rbegin(), lhs.rend());
     int begin = -1;
-    int end = -1;
+    int end = rhs.size();
     for (unsigned int j = 0; j < rhs.size(); ++j){
         if (lhs[j] != rhs[j]){
             end = j;
@@ -123,7 +123,7 @@ void Graph::minimum_mean_cycle(vector<int>& lhs, vector<int>& rhs){
         }
     }
     begin = rhs.size()-end;
-    end = lhs.size()-1-end;
+    end = lhs.size()-end;
     int flag = _lhs[begin];
     for (int i = begin+1; i < end+1; ++i){
         if (flag == _lhs[i]){
