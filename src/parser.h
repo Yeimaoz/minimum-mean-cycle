@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <set>
+#include <iostream>
 using namespace std;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -18,6 +19,7 @@ struct edge_S{
         int _fromNode;
         int _toNode;
         int _weight;
+        void information(){ cout << "from " << _fromNode << " to " << _toNode << ", " << _weight << endl;}
 };
 //----------------------------------------------------------------------------------------------------------------------
 struct parser_S{
