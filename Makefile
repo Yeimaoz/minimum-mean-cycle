@@ -18,7 +18,7 @@ $(BUILD)/%.o: %.cpp
 $(BUILD):
 	mkdir $@
 
-$(TARGET): $(BUILD)/main.o $(BUILD)/parser.o $(BUILD)/Graph.o $(BUILD)/Node.o 
+$(TARGET): $(BUILD)/main.o $(BUILD)/parser.o $(BUILD)/Graph.o 
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 test: $(TARGET)
