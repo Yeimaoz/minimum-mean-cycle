@@ -22,13 +22,13 @@ int main(int argc, char** argv)
         }
         pParser->dump();
     }
-    Graph G(pParser->_vNode, pParser->_vEdge);
-    G.minimum_mean_cycle();
-  
-    /* Start your code */
-    // 1. find minimum mean cycle
-    // 2. dump minimum mean weight and minimum mean cycle in "solution.txt"
 
+    Graph* G = new Graph(pParser->_vNode, pParser->_vEdge);
+    G->Karp_Algorithm();
+    G->solution();
+    G->dump();
+
+    delete G;
     delete pParser;
     return 0;
 }
