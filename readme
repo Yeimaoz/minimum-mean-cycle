@@ -11,3 +11,7 @@ Usage:
     # 4. test by case, if CASE is not specified, the defaut testcase is set to the graph from p.19 of class mertrial of ch. Graphs with randomly given weights 
     # For example: make test CASE=testcase/test.in
     make test CASE=<.in>
+
+Note:
+    In my implementation, the super node id is set to "0". 
+    Therefore, any node's id should be set in the range from "1" to "2147483648".
