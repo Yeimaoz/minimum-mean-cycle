@@ -135,9 +135,15 @@ void Graph::minimum_mean_cycle(vector<int>& lhs, vector<int>& rhs){
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::solution(){
-    printf("[case info] #node:%d, #edge:%d\n", nc, ec);
-    printf("[my solution] MMC: %f\n", _minimum_mean);
-    printf("[my solution] Cycle: %s\n", _minimum_mean_cycle_s.c_str());
+    if (_minimum_mean == 1e9){
+        printf("[case info] #node:%d, #edge:%d\n", nc, ec);
+        printf("[my solution] MMC: %.2f\n", _minimum_mean);
+        printf("[my solution] Cycle: %s\n", "no cycle");
+    } else {
+        printf("[case info] #node:%d, #edge:%d\n", nc, ec);
+        printf("[my solution] MMC: %.2f\n", _minimum_mean);
+        printf("[my solution] Cycle: %s\n", _minimum_mean_cycle_s.c_str());
+    }
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Graph::dump(){
@@ -145,8 +151,8 @@ void Graph::dump(){
 
     if (_minimum_mean != 1e9){
         // have cycle
-        outfile << to_string(_minimum_mean) << endl;
-        outfile << _minimum_mean_cycle_s << endl;
+        outfile << fixed << setprecision(2) << _minimum_mean << endl;
+        outfile <<_minimum_mean_cycle_s << endl;
     } else {
         // acyclic
         outfile << "No cycle" << endl;;
